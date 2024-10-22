@@ -1,18 +1,54 @@
-// TODO: Implement the password generation logic based on user input
+function generatePassword() {
+    const length = document.getElementById("length").value;
+    const includeUppercase = document.getElementById("includeUppercase").checked;
+    const includeLowercase = document.getElementById("includeLowercase").checked;
+    const includeNumbers = document.getElementById("includeNumbers").checked;
+    const includeSymbols = document.getElementById("includeSymbols").checked;
 
-const generatePassword = (length, options) => {
-    // Character sets for password generation
-    const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const lowercase = "abcdefghijklmnopqrstuvwxyz";
-    const numbers = "0123456789";
-    const specialChars = "!@#$%^&*()";
+    const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+    const numberChars = "0123456789";
+    const symbolChars = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
 
-    // TODO: Create a variable for the character set based on selected options
+    let charPool = "";
+    if (includeUppercase) charPool += uppercaseChars;
+    if (includeLowercase) charPool += lowercaseChars;
+    if (includeNumbers) charPool += numberChars;
+    if (includeSymbols) charPool += symbolChars;
 
-    // TODO: Generate the password based on the selected criteria
-    return password;
-};
+    if (charPool === "") {
+        alert("Pilih salah satu.");
+        return;
+    }
 
-// TODO: Add event listener to the button to call generatePassword and display the output
+    if(length < 8){
+        alert("Masukkan minimal 8");
+        return;
+    }
 
-// BONUS: Implement the copy to clipboard functionality
+    let password = "";
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charPool.length);
+        password += charPool[randomIndex];
+    }
+
+    document.getElementById("password").value = password;
+    document.getElementById('passwordOutput').textContent = password;
+    document.getElementById('div_copy').innerHTML = `
+        <button class="copyBtn" id="copyBtn">Copy Password</button>
+    `;
+    
+    document.getElementById('copyBtn').addEventListener('click', () => {
+        const passwordOutput = document.getElementById('passwordOutput').textContent;
+        if (passwordOutput) {
+            navigator.clipboard.writeText(passwordOutput).then(() => {
+                alert('Password copied to clipboard!');
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        } else {
+            alert('No password to copy!');
+        }
+    });
+}
+
